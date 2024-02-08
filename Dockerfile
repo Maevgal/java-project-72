@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY /app .
 
-RUN gradle installDist
+RUN pwd
+
+RUN ./gradlew installDist
 
 CMD ./build/install/app/bin/app
