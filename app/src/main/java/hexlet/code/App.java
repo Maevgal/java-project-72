@@ -1,5 +1,8 @@
 package hexlet.code;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import hexlet.code.repository.BaseRepository;
 import io.javalin.Javalin;
 
 import java.io.IOException;
@@ -18,6 +21,14 @@ public class App {
     }
 
     public static Javalin getApp() throws IOException, SQLException {
+        var hikariConfig = new HikariConfig();
+
+        String url = System.getenv().getOrDefault("JDBC_DATABASE_URL","jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+        hikariConfig.setJdbcUrl(url);
+
+        var dataSource = new HikariDataSource(hikariConfig);
+        BaseRepository.dataSource = dataSource;
+
         var app = Javalin.create(config -> {
             config.plugins.enableDevLogging();
         });
