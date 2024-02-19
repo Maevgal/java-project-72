@@ -11,12 +11,11 @@ import hexlet.code.repository.BaseRepository;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
+import org.postgresql.Driver;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,8 +33,15 @@ public class App {
     public static Javalin getApp() throws Exception {
         var hikariConfig = new HikariConfig();
 
-        String jdbcDatabaseUrl = System.getenv()
-                .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+        /*String jdbcDatabaseUrl = System.getenv()
+                .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");*/
+        String jdbcDatabaseUrl = "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;";
+        if (System.getenv("JDBC_DATABASE_URL") != null) {
+            hikariConfig.setDriverClassName(Driver.class.getCanonicalName());
+            jdbcDatabaseUrl = System.getenv("JDBC_DATABASE_URL");
+            hikariConfig.setUsername(System.getenv("JDBC_DATABASE_USERNAME"));
+            hikariConfig.setPassword(System.getenv("JDBC_DATABASE_PASSWORD"));
+        }
         hikariConfig.setJdbcUrl(jdbcDatabaseUrl);
         log.info("jdbcDatabaseUrl: %s".formatted(jdbcDatabaseUrl));
 
@@ -64,7 +70,7 @@ public class App {
         app.start(7070);
         app.post("/urls", UrlController::create);
         app.get("/urls", UrlController::index);
-        app.get("/urls/{id}",UrlController::show);
+        app.get("/urls/{id}", UrlController::show);
         return app;
     }
 
