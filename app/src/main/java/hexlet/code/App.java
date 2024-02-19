@@ -5,17 +5,24 @@ import com.zaxxer.hikari.HikariDataSource;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.resolve.ResourceCodeResolver;
+import hexlet.code.controller.RootController;
+import hexlet.code.controller.UrlController;
 import hexlet.code.repository.BaseRepository;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
+import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
 import java.sql.SQLException;
+import java.util.stream.Collectors;
 
+@Slf4j
 public class App {
-    public static void main(String[] args) throws SQLException, IOException {
+    public static void main(String[] args) throws Exception {
         var app = getApp();
-
         app.start(getPort());
     }
 
@@ -24,13 +31,27 @@ public class App {
         return Integer.valueOf(port);
     }
 
-    public static Javalin getApp() throws IOException, SQLException {
+    public static Javalin getApp() throws Exception {
         var hikariConfig = new HikariConfig();
 
-        String url = System.getenv().getOrDefault("JDBC_DATABASE_URL","jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
-        hikariConfig.setJdbcUrl(url);
+        String jdbcDatabaseUrl = System.getenv()
+                .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+        hikariConfig.setJdbcUrl(jdbcDatabaseUrl);
+        log.info("jdbcDatabaseUrl: %s".formatted(jdbcDatabaseUrl));
 
         var dataSource = new HikariDataSource(hikariConfig);
+
+
+        URL url = App.class.getClassLoader().getResource("schema.sql");
+        File file = new File(url.getFile());
+        String sql = Files.lines(file.toPath())
+                .collect(Collectors.joining("\n"));
+
+        // Получаем соединение, создаем стейтмент и выполняем запрос
+        try (var connection = dataSource.getConnection();
+             var statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
         BaseRepository.dataSource = dataSource;
 
         var app = Javalin.create(config -> {
@@ -39,8 +60,11 @@ public class App {
 
         JavalinJte.init(createTemplateEngine());
 
-        app.get("/", ctx -> ctx.result("Hello World"));
+        app.get("/", RootController::index);
         app.start(7070);
+        app.post("/urls", UrlController::create);
+        app.get("/urls", UrlController::index);
+        app.get("/urls/{id}",UrlController::show);
         return app;
     }
 
