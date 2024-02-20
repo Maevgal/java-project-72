@@ -1,5 +1,6 @@
 package hexlet.code.controller;
 
+import hexlet.code.dto.BasePage;
 import hexlet.code.dto.UrlsCheckPage;
 import hexlet.code.dto.UrlsPage;
 import hexlet.code.model.Url;
@@ -17,45 +18,63 @@ import java.util.Map;
 
 public class UrlController {
     public static void create(Context ctx) throws SQLException {
-
-        String name = ctx.formParam("url");
-        URL urlParser = null;
+        String receivedUrl = ctx.formParam("url");
+        URL url;
         try {
-            urlParser = new URL(name);
+            url = new URL(receivedUrl);
+            String name;
+            StringBuilder str = new StringBuilder();
+            str.append(url.getProtocol()).append("://").append(url.getHost());
+            if (url.getPort() == -1) {
+                name = String.valueOf(str);
+            } else {
+                name = String.valueOf(str.append(":").append(url.getPort()));
+            }
+            if (UrlRepository.checkUrl(name).isEmpty()) {
+                Url newUrl = new Url(name);
+                UrlRepository.save(newUrl);
+                ctx.sessionAttribute("flash", "Страница успешно добавлена");
+                ctx.sessionAttribute("flash-type", "success");
+                ctx.redirect("/urls");
+            } else {
+                url = new URL(receivedUrl);
+                StringBuilder str_danger = new StringBuilder();
+                str_danger.append(url.getProtocol()).append("://").append(url.getHost());
+                if (url.getPort() == -1) {
+                    String.valueOf(str);
+                } else {
+                    String.valueOf(str.append(":").append(url.getPort()));
+                }
+                ctx.sessionAttribute("flash", "Страница уже существует");
+                ctx.sessionAttribute("flash-type", "danger");
+                ctx.redirect("/urls");
+
+
+            }
 
         } catch (MalformedURLException e) {
-            ctx.sessionAttribute("flash", "Некорректный URL");
-            ctx.sessionAttribute("flash-type", "danger");
-            ctx.redirect("/");
+            String name = String.format("%s://%s", "null", "null");
+            if (UrlRepository.checkUrl(name).isEmpty()) {
+                Url newUrl = new Url(name);
+                UrlRepository.save(newUrl);
+                ctx.sessionAttribute("flash", "Страница успешно добавлена");
+                ctx.sessionAttribute("flash-type", "success");
+                ctx.redirect("/urls");
+            } else {
+                ctx.sessionAttribute("flash", "Страница уже существует");
+                ctx.sessionAttribute("flash-type", "danger");
+                ctx.redirect("/urls");
+            }
         }
-
-        String resulrUrl;
-        StringBuilder str = new StringBuilder();
-        str.append(urlParser.getProtocol()).append("://").append(urlParser.getHost());
-        if (urlParser.getPort() == -1) {
-            resulrUrl = String.valueOf(str);
-        } else {
-            resulrUrl = String.valueOf(str.append(":").append(urlParser.getPort()));
-        }
-
-        if (!UrlRepository.checkUrl(resulrUrl).isEmpty()) {
-            ctx.sessionAttribute("flash", "Страница уже существует");
-            ctx.sessionAttribute("flash-type", "a-danger");
-            ctx.redirect("/");
-        }
-
-        Url newUrl = new Url(resulrUrl);
-        UrlRepository.save(newUrl);
-        ctx.sessionAttribute("flash", "Страница успешно добавлена");
-        ctx.sessionAttribute("flash-type", "success");
-        ctx.redirect("/urls");
     }
 
     public static void index(Context ctx) throws SQLException {
         List<UrlsCheckPage> urlsCheck = UrlRepository.getUrls();
-        ctx.sessionAttribute("flash", "Страница успешно добавлена");
-        ctx.sessionAttribute("flash-type", "success");
-        ctx.render("urls.jte", Map.of("page", urlsCheck));
+        BasePage flash = new BasePage();
+
+        flash.setFlash(ctx.consumeSessionAttribute("flash"));
+        flash.setFlashType(ctx.consumeSessionAttribute("flash-type"));
+        ctx.render("urls.jte", Map.of("list", urlsCheck, "page", flash));
     }
 
     public static void show(Context ctx) throws SQLException {
@@ -64,10 +83,8 @@ public class UrlController {
                 .orElseThrow(() -> new NotFoundResponse("Url not found"));
         List<UrlCheck> urlCheck = UrlCheckRepository.find(url_id);
         UrlsPage page = new UrlsPage(url, urlCheck);
-        page.setFlash(ctx.consumeSessionAttribute("flash"));
-        page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
-        ctx.render("show.jte", Map.of("page",page));
-
-
+        /*page.setFlash(ctx.consumeSessionAttribute("flash"));
+        page.setFlashType(ctx.consumeSessionAttribute("flash-type"));*/
+        ctx.render("show.jte", Map.of("page", page));
     }
 }

@@ -13,5 +13,4 @@ public class UrlsCheckPage extends BasePage{
     private String url;
     private Timestamp check;
     private int status_code;
-
 }

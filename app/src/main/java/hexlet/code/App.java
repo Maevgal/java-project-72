@@ -33,15 +33,9 @@ public class App {
     public static Javalin getApp() throws Exception {
         var hikariConfig = new HikariConfig();
 
-        /*String jdbcDatabaseUrl = System.getenv()
-                .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");*/
-        String jdbcDatabaseUrl = "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;";
-        if (System.getenv("JDBC_DATABASE_URL") != null) {
-            hikariConfig.setDriverClassName(Driver.class.getCanonicalName());
-            jdbcDatabaseUrl = System.getenv("JDBC_DATABASE_URL");
-            hikariConfig.setUsername(System.getenv("JDBC_DATABASE_USERNAME"));
-            hikariConfig.setPassword(System.getenv("JDBC_DATABASE_PASSWORD"));
-        }
+        String jdbcDatabaseUrl = System.getenv()
+                .getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
+
         hikariConfig.setJdbcUrl(jdbcDatabaseUrl);
         log.info("jdbcDatabaseUrl: %s".formatted(jdbcDatabaseUrl));
 

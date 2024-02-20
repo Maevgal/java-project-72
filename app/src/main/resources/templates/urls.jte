@@ -2,11 +2,19 @@
 @import java.sql.Timestamp
 @import java.time.format.DateTimeFormatter
 @import java.util.List
+@import hexlet.code.dto.BasePage
 @import java.util.Optional
-@param List<UrlsCheckPage> page
+@param List<UrlsCheckPage> list
+@param BasePage page
 @template.layout.page(
 content = @`
     <html>
+    <section>
+    @if(page != null && page.getFlash() != null)
+         <div class="rounded-0 m-0 alert alert-dismissible fade show alert-${page.getFlashType()}" role="alert">
+            <p class="m-0">${page.getFlash()}</p>
+        </div>
+    @endif
     <main>
         <section>
             <div class="container-lg mt-5">
@@ -22,7 +30,7 @@ content = @`
                     </tr>
                     </thead>
                     <tbody>
-                    @for (var url :page)
+                    @for (var url :list)
                         <tr>
                             <td>${url.getId()}</td>
                             <td>
@@ -47,5 +55,6 @@ content = @`
             </div>
         </section>
     </main>
+    </section>
     </html>
 `)

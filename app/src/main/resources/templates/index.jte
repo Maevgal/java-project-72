@@ -1,3 +1,5 @@
+@param hexlet.code.dto.BasePage page
+
 <!DOCTYPE html>
 
 @template.layout.page(
@@ -29,3 +31,4 @@ content = @`
 </html>
 `
 )
+

@@ -32,6 +32,16 @@ public class UrlRepository extends BaseRepository {
         }
     }
 
+    /*public static boolean checkUrl (String url) throws SQLException{
+        String sql = "SELECT * FROM urls WHERE name = ?";
+        try (var connection = dataSource.getConnection();
+             var preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, url);
+            var resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+    }
+    }*/
+
     public static void save(Url url) throws SQLException {
         String sql = "INSERT INTO urls (name, created_at) VALUES (?, ?)";
         Timestamp createdAt = new Timestamp(System.currentTimeMillis());
@@ -81,7 +91,7 @@ public class UrlRepository extends BaseRepository {
              var stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
             ResultSet resultSet = stmt.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 String url_name = resultSet.getString("name");
                 Timestamp created_ar = resultSet.getTimestamp("created_at");
                 Url url = new Url(url_name);
