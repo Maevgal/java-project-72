@@ -38,7 +38,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.mockito:mockito-core:3.+")
 }
-
+tasks.jacocoTestReport { reports { xml.required.set(true) } }
 tasks.test {
     useJUnitPlatform()
     // https://technology.lastminute.com/junit5-kotlin-and-gradle-dsl/
