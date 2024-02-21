@@ -48,8 +48,6 @@ public class UrlController {
                 ctx.sessionAttribute("flash", "Страница уже существует");
                 ctx.sessionAttribute("flash-type", "danger");
                 ctx.redirect("/urls");
-
-
             }
 
         } catch (MalformedURLException e) {
