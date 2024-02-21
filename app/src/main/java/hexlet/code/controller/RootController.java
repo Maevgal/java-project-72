@@ -1,9 +1,6 @@
 package hexlet.code.controller;
 
-import hexlet.code.dto.BasePage;
 import io.javalin.http.Context;
-
-import java.util.Map;
 
 public class RootController {
 

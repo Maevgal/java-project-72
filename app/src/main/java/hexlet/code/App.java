@@ -11,7 +11,6 @@ import hexlet.code.repository.BaseRepository;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
-import org.postgresql.Driver;
 
 import java.io.File;
 import java.net.URL;
@@ -43,6 +42,7 @@ public class App {
 
 
         URL url = App.class.getClassLoader().getResource("schema.sql");
+        System.out.println(url);
         File file = new File(url.getFile());
         String sql = Files.lines(file.toPath())
                 .collect(Collectors.joining("\n"));
