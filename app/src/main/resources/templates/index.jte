@@ -4,7 +4,7 @@
 
 @template.layout.page(
 content = @`
-<html>
+<section>
         <div class="container-fluid bg-dark p-5">
             <div class="row">
                 <div class="col-md-10 col-lg-8 mx-auto text-white">
@@ -28,7 +28,7 @@ content = @`
                 </div>
             </div>
         </div>
-</html>
+</section>
 `
 )
 

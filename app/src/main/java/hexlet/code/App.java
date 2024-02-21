@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class App {
     public static void main(String[] args) throws Exception {
-        var app = getApp();
+        Javalin app = getApp();
         app.start(getPort());
     }
 
@@ -61,7 +61,7 @@ public class App {
         JavalinJte.init(createTemplateEngine());
 
         app.get("/", RootController::index);
-        app.start(7070);
+        //app.start(7070);
         app.post("/urls", UrlController::create);
         app.get("/urls", UrlController::index);
         app.get("/urls/{id}", UrlController::show);

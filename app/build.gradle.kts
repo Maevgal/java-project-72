@@ -7,6 +7,7 @@ plugins {
     id("io.freefair.lombok") version "8.3"
     id("com.github.ben-manes.versions") version "0.47.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    jacoco
 }
 
 application {
@@ -35,6 +36,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.mockito:mockito-core:3.+")
 }
 
 tasks.test {
