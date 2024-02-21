@@ -38,8 +38,8 @@ public class UrlController {
                 ctx.redirect("/urls");
             } else {
                 url = new URL(receivedUrl);
-                StringBuilder str_danger = new StringBuilder();
-                str_danger.append(url.getProtocol()).append("://").append(url.getHost());
+                StringBuilder strDanger = new StringBuilder();
+                strDanger.append(url.getProtocol()).append("://").append(url.getHost());
                 if (url.getPort() == -1) {
                     String.valueOf(str);
                 } else {
@@ -76,10 +76,10 @@ public class UrlController {
     }
 
     public static void show(Context ctx) throws SQLException {
-        Long url_id = ctx.pathParamAsClass("id", Long.class).get();
-        Url url = UrlRepository.find(url_id)
+        Long urlId = ctx.pathParamAsClass("id", Long.class).get();
+        Url url = UrlRepository.find(urlId)
                 .orElseThrow(() -> new NotFoundResponse("Url not found"));
-        List<UrlCheck> urlCheck = UrlCheckRepository.find(url_id);
+        List<UrlCheck> urlCheck = UrlCheckRepository.find(urlId);
         UrlsPage page = new UrlsPage(url, urlCheck);
         /*page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));*/

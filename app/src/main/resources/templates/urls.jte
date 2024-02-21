@@ -44,7 +44,7 @@ content = @`
                                     .orElse(" ")}
                             </td>
                             <td>
-                                <a>${Optional.ofNullable(url.getStatus_code())
+                                <a>${Optional.ofNullable(url.getStatusCode())
                                         .map(String::valueOf)
                                         .orElse(" ")}</a>
                             </td>

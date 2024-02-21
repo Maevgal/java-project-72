@@ -50,7 +50,7 @@ content = @`
                 @for(var urlCheck : page.getUrlChecks())
                 <tr>
                     <td>${urlCheck.getId()}</td>
-                    <td>${urlCheck.getStatus_code()}</td>
+                    <td>${urlCheck.getStatusCode()}</td>
                     <td>${urlCheck.getTitle()}</td>
                     <td>${urlCheck.getH1()}</td>
                     <td>${urlCheck.getDescription()}</td>

@@ -10,14 +10,14 @@ import java.util.List;
 
 public class UrlCheckRepository extends BaseRepository {
     public static void save(UrlCheck urlcheck) throws SQLException {
-        String sql = "INSERT INTO url_checks (url_id, status_code, title, h1, description, created_at) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO url_checks (url_id, status_code, title, h1, description, created_at) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
         Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setLong(1, urlcheck.getUrl_id());
-            stmt.setInt(2, urlcheck.getStatus_code());
+            stmt.setLong(1, urlcheck.getUrlId());
+            stmt.setInt(2, urlcheck.getStatusCode());
             stmt.setString(3, urlcheck.getTitle());
             stmt.setString(4, urlcheck.getH1());
             stmt.setString(5, urlcheck.getDescription());
@@ -34,12 +34,12 @@ public class UrlCheckRepository extends BaseRepository {
         }
     }
 
-    public static List<UrlCheck> find(Long url_id) throws SQLException {
+    public static List<UrlCheck> find(Long urlId) throws SQLException {
         String sql = "SELECT * FROM url_checks WHERE url_id = ?";
         List<UrlCheck> result = new ArrayList<>();
         try (var connection = dataSource.getConnection();
              var preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setLong(1, url_id);
+            preparedStatement.setLong(1, urlId);
             var resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 var id = resultSet.getLong("id");
@@ -50,7 +50,7 @@ public class UrlCheckRepository extends BaseRepository {
                 var createdAt = resultSet.getTimestamp("created_at");
                 var urlCheck = new UrlCheck(statusCode, title, h1, description);
                 urlCheck.setId(id);
-                urlCheck.setUrl_id(url_id);
+                urlCheck.setUrlId(urlId);
                 urlCheck.setCreatedAt(createdAt);
                 result.add(urlCheck);
             }
