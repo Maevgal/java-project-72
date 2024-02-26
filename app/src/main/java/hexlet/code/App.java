@@ -41,13 +41,17 @@ public class App {
         var dataSource = new HikariDataSource(hikariConfig);
 
 
-        URL url = App.class.getClassLoader().getResource("schema.sql");
-        System.out.println(url);
-        File file = new File(url.getFile());
-        String sql = Files.lines(file.toPath())
-                .collect(Collectors.joining("\n"));
+//        URL url = App.class.getClassLoader()
+//                .getResource("schema.sql");
+//        System.out.println(url);
+//        File file = new File(url.getFile());
+//        String sql = Files.lines(file.toPath())
+//                .collect(Collectors.joining("\n"));
 
-        // Получаем соединение, создаем стейтмент и выполняем запрос
+        String sql = new String(App.class.getClassLoader()
+                .getResourceAsStream("schema.sql").readAllBytes());
+        log.info(sql);
+
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {
             statement.execute(sql);
