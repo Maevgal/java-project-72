@@ -2,12 +2,19 @@
 
 @param UrlsPage page
 
+
 @template.layout.page(
 content = @`
 <html>
 <main class="flex-grow-1">
 
     <section>
+        @if(page != null && page.getFlash() != null)
+            <div class="rounded-0 m-0 alert alert-dismissible fade show alert alert-${page.getFlashType()}" role="alert">
+                <p class="m-0">${page.getFlash()}</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         <div class="container-lg mt-5">
             <h1>${page.getUrl().getName()}</h1>
             <table class="table table-bordered table-hover mt-3">
@@ -33,7 +40,7 @@ content = @`
             </table>
 
             <h2 class="mt-5">Проверки</h2>
-            <form method="post" action="/urls/1/checks">
+            <form method="post" action="/urls/${page.getUrl().getId()}/checks">
                 <button type="submit" class="btn btn-primary">Запустить проверку</button>
             </form>
 

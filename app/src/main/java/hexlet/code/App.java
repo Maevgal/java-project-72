@@ -65,6 +65,8 @@ public class App {
         app.post("/urls", UrlController::create);
         app.get("/urls", UrlController::index);
         app.get("/urls/{id}", UrlController::show);
+        app.post("/urls/{id}/checks", UrlController::check);
+
         return app;
     }
 
@@ -74,6 +76,4 @@ public class App {
         TemplateEngine templateEngine = TemplateEngine.create(codeResolver, ContentType.Html);
         return templateEngine;
     }
-
-
 }

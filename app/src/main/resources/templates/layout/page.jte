@@ -36,14 +36,6 @@
 </nav>
 
 <main class="flex-grow-1">
-    <%--@if(page != null && page.getFlash() != null)
-        --%><%--rounded-0 m-0 alert alert-dismissible fade show alert---%><%--
-        <div class="alert alert${page.getFlashType()}" role="alert">
-            ${page.getFlash()}
-            --%><%--<p class="m-0">${page.getFlash()}</p>--%><%--
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif--%>
     <section>
         ${content}
     </section>

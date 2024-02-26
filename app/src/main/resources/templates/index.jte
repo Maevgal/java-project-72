@@ -1,16 +1,26 @@
-@param hexlet.code.dto.BasePage page
+@import hexlet.code.dto.BasePage
+@param BasePage page
 
 <!DOCTYPE html>
 
 @template.layout.page(
 content = @`
-<section>
+    <section>
+    @if(page != null && page.getFlash() != null)
+        <div class="rounded-0 m-0 alert alert-dismissible fade show alert alert-${page.getFlashType()}"
+             role="alert">
+            <p class="m-0">${page.getFlash()}</p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
         <div class="container-fluid bg-dark p-5">
             <div class="row">
                 <div class="col-md-10 col-lg-8 mx-auto text-white">
                     <h1 class="display-3 mb-0">Анализатор страниц</h1>
                     <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
+
                     <form action="/urls" method="post" class="rss-form text-body">
+
                         <div class="row">
                             <div class="col">
                                 <div class="form-floating">
@@ -28,7 +38,7 @@ content = @`
                 </div>
             </div>
         </div>
-</section>
+    </section>
 `
 )
 

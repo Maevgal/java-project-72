@@ -13,7 +13,6 @@ public class UrlCheckRepository extends BaseRepository {
         String sql = "INSERT INTO url_checks (url_id, status_code, title, h1, description, created_at) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
         Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setLong(1, urlcheck.getUrlId());
@@ -24,7 +23,6 @@ public class UrlCheckRepository extends BaseRepository {
             stmt.setTimestamp(6, createdAt);
             stmt.executeUpdate();
             var generatedKeys = stmt.getGeneratedKeys();
-            // Устанавливаем ID в сохраненную сущность
             if (generatedKeys.next()) {
                 urlcheck.setId(generatedKeys.getLong(1));
                 urlcheck.setCreatedAt(createdAt);
@@ -41,14 +39,14 @@ public class UrlCheckRepository extends BaseRepository {
              var preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, urlId);
             var resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                var id = resultSet.getLong("id");
-                var statusCode = resultSet.getInt("status_code");
-                var title = resultSet.getString("title");
-                var h1 = resultSet.getString("h1");
-                var description = resultSet.getString("description");
-                var createdAt = resultSet.getTimestamp("created_at");
-                var urlCheck = new UrlCheck(statusCode, title, h1, description);
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                Integer statusCode = resultSet.getInt("status_code");
+                String title = resultSet.getString("title");
+                String h1 = resultSet.getString("h1");
+                String description = resultSet.getString("description");
+                Timestamp createdAt = resultSet.getTimestamp("created_at");
+                UrlCheck urlCheck = new UrlCheck(statusCode, title, h1, description);
                 urlCheck.setId(id);
                 urlCheck.setUrlId(urlId);
                 urlCheck.setCreatedAt(createdAt);
