@@ -70,7 +70,7 @@ class AppTest {
             var requestBody = "url=12345";
             var response = client.post("/urls", requestBody);
             assertThat(response.code()).isEqualTo(200);
-            assertThat(UrlRepository.getUrls().size()).isEqualTo(1);
+            assertThat(UrlRepository.getUrls().size()).isEqualTo(0);
         });
     }
 
