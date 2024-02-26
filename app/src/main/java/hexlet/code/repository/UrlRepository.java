@@ -52,11 +52,13 @@ public class UrlRepository extends BaseRepository {
 
     public static List<UrlsCheckPage> getUrls() throws SQLException {
         var sql = """
-                SELECT urls.id AS id,
-                      urls.name AS name,\s
-                                url_checks.created_at AS created_at,\s
-                                url_checks.status_code AS status_code
-                                FROM urls left JOIN url_checks ON urls.id = url_checks.url_id
+                SELECT DISTINCT ON (urls.id) urls.id,
+                      urls.name,
+                      url_checks.created_at,
+                      url_checks.status_code
+                      FROM urls             
+                      LEFT JOIN url_checks ON urls.id = url_checks.url_id
+                      ORDER BY urls.id, url_checks.created_at DESC                   
                 """;
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
