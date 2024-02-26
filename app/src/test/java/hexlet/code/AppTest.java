@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,7 +27,7 @@ class AppTest {
 
 
     @Test
-    void testMainPage() throws Exception {
+    void testMainPage() {
         JavalinTest.test(app, (server, client) -> {
             var response = client.get("/");
             assertThat(response.code()).isEqualTo(200);
@@ -65,7 +64,7 @@ class AppTest {
     }
 
     @Test
-    public void testCreateIncorrectPage() throws SQLException {
+    public void testCreateIncorrectPage() {
         JavalinTest.test(app, (server, client) -> {
             var requestBody = "url=12345";
             var response = client.post("/urls", requestBody);
@@ -103,7 +102,7 @@ class AppTest {
     }
 
     @Test
-    public void testUrlCheck() throws IOException, SQLException {
+    public void testUrlCheck() throws IOException {
         var mockServer = new MockWebServer();
         var ckUrl = mockServer.url("/").toString();
 

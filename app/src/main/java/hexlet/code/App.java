@@ -12,9 +12,12 @@ import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
 @Slf4j
 public class App {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws SQLException, IOException {
         Javalin app = getApp();
         app.start(getPort());
     }
@@ -24,7 +27,7 @@ public class App {
         return Integer.valueOf(port);
     }
 
-    public static Javalin getApp() throws Exception {
+    public static Javalin getApp() {
         var hikariConfig = new HikariConfig();
 
         String jdbcDatabaseUrl = System.getenv()
@@ -35,21 +38,14 @@ public class App {
 
         var dataSource = new HikariDataSource(hikariConfig);
 
-
-//        URL url = App.class.getClassLoader()
-//                .getResource("schema.sql");
-//        System.out.println(url);
-//        File file = new File(url.getFile());
-//        String sql = Files.lines(file.toPath())
-//                .collect(Collectors.joining("\n"));
-
-        String sql = new String(App.class.getClassLoader()
-                .getResourceAsStream("schema.sql").readAllBytes());
-        log.info(sql);
-
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {
+            String sql = new String(App.class.getClassLoader()
+                    .getResourceAsStream("schema.sql").readAllBytes());
+            log.info(sql);
             statement.execute(sql);
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
         }
         BaseRepository.dataSource = dataSource;
 
@@ -60,7 +56,6 @@ public class App {
         JavalinJte.init(createTemplateEngine());
 
         app.get("/", RootController::index);
-        //app.start(7070);
         app.post("/urls", UrlController::create);
         app.get("/urls", UrlController::index);
         app.get("/urls/{id}", UrlController::show);
