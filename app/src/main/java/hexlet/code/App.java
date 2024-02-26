@@ -12,11 +12,6 @@ import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.net.URL;
-import java.nio.file.Files;
-import java.util.stream.Collectors;
-
 @Slf4j
 public class App {
     public static void main(String[] args) throws Exception {
