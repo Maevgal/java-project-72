@@ -56,10 +56,10 @@ public class UrlRepository extends BaseRepository {
                       urls.name,
                       url_checks.created_at,
                       url_checks.status_code
-                      FROM urls             
+                      FROM urls
                       LEFT JOIN url_checks ON urls.id = url_checks.url_id
-                      ORDER BY urls.id, url_checks.created_at DESC                   
-                """;
+                      ORDER BY urls.id, url_checks.created_at DESC
+                      """;
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
             ResultSet resultSet = stmt.executeQuery();
