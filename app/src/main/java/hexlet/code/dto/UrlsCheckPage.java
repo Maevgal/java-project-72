@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Getter
 @AllArgsConstructor
 @Setter
-public class UrlsCheckPage extends BasePage {
+public class UrlsCheckPage {
     private Long id;
     private String url;
     private Timestamp check;

@@ -32,7 +32,7 @@ public class UrlCheckRepository extends BaseRepository {
         }
     }
 
-    public static List<UrlCheck> find(Long urlId) throws SQLException {
+    public static List<UrlCheck> findById(Long urlId) throws SQLException {
         String sql = "SELECT * FROM url_checks WHERE url_id = ?";
         List<UrlCheck> result = new ArrayList<>();
         try (var connection = dataSource.getConnection();

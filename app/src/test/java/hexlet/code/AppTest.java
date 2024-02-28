@@ -37,15 +37,6 @@ class AppTest {
         });
     }
 
-    @Test
-    public void testUrlPage() {
-        JavalinTest.test(app, ((server, client) -> {
-            var response = client.get("/urls");
-            assertThat(response.code()).isEqualTo(200);
-            assertThat(response.body()).isNotNull();
-            assertThat(response.body().string()).contains("urls");
-        }));
-    }
 
     @Test
     public void testCreatePage() {
@@ -55,7 +46,7 @@ class AppTest {
             assertThat(response.code()).isEqualTo(200);
             assertThat(response.body().string()).contains("https://www.example.com");
 
-            var createdUrl = UrlRepository.checkUrl("https://www.example.com");
+            var createdUrl = UrlRepository.findAllByName("https://www.example.com");
             assertThat(createdUrl.size()).isEqualTo(1);
 
             assertThat(createdUrl.get(0).getName()).isEqualTo("https://www.example.com");
@@ -69,7 +60,7 @@ class AppTest {
             var requestBody = "url=12345";
             var response = client.post("/urls", requestBody);
             assertThat(response.code()).isEqualTo(200);
-            assertThat(UrlRepository.getUrls().size()).isEqualTo(0);
+            assertThat(UrlRepository.findAllUrlsWithChecks().size()).isEqualTo(0);
         });
     }
 
@@ -90,11 +81,21 @@ class AppTest {
     }
 
     @Test
+    public void testUrlPage() {
+        JavalinTest.test(app, ((server, client) -> {
+            var response = client.get("/urls");
+            assertThat(response.code()).isEqualTo(200);
+            assertThat(response.body()).isNotNull();
+            assertThat(response.body().string()).contains("urls");
+        }));
+    }
+
+    @Test
     public void testShow() {
         JavalinTest.test(app, (server, client) -> {
             var url = new Url("https://www.example.com");
             UrlRepository.save(url);
-            var createdUrl = UrlRepository.checkUrl("https://www.example.com");
+            var createdUrl = UrlRepository.findAllByName("https://www.example.com");
             var id = createdUrl.get(0).getId();
             var response = client.get("/urls/" + id);
             assertThat(response.code()).isEqualTo(200);
@@ -118,14 +119,14 @@ class AppTest {
 
             var formattedName = String.format("%s://%s", mockServer.url("/").url().getProtocol(),
                     mockServer.url("/").url().getAuthority());
-            var addUrl = UrlRepository.checkUrl(formattedName);
+            var addUrl = UrlRepository.findAllByName(formattedName);
             assertThat(addUrl).isNotNull();
             assertThat(addUrl.get(0).getName()).isEqualTo(formattedName);
 
             var response2 = client.post("/urls/" + addUrl.get(0).getId() + "/checks");
             assertThat(response2.code()).isEqualTo(200);
 
-            var ursCheck = UrlCheckRepository.find(addUrl.get(0).getId());
+            var ursCheck = UrlCheckRepository.findById(addUrl.get(0).getId());
             var title = ursCheck.get(0).getTitle();
             var h1 = ursCheck.get(0).getH1();
             var description = ursCheck.get(0).getDescription();

@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Setter
 public class Url {
     private Long id;
-    String name;
+    private String name;
     private Timestamp createdAt;
 
     public Url(String name) {

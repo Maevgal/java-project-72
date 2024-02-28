@@ -43,7 +43,7 @@ public class UrlController {
         } else {
             name = String.valueOf(str.append(":").append(url.getPort()));
         }
-        if (UrlRepository.checkUrl(name).isEmpty()) {
+        if (UrlRepository.findAllByName(name).isEmpty()) {
             Url newUrl = new Url(name);
             UrlRepository.save(newUrl);
             ctx.sessionAttribute("flash", "Страница успешно добавлена");
@@ -65,7 +65,7 @@ public class UrlController {
     }
 
     public static void index(Context ctx) throws SQLException {
-        List<UrlsCheckPage> urlsCheck = UrlRepository.getUrls();
+        List<UrlsCheckPage> urlsCheck = UrlRepository.findAllUrlsWithChecks();
         BasePage flash = new BasePage();
         flash.setFlash(ctx.consumeSessionAttribute("flash"));
         flash.setFlashType(ctx.consumeSessionAttribute("flash-type"));
@@ -74,18 +74,19 @@ public class UrlController {
 
     public static void show(Context ctx) throws SQLException {
         Long urlId = ctx.pathParamAsClass("id", Long.class).get();
-        Url url = UrlRepository.find(urlId)
+        Url url = UrlRepository.findById(urlId)
                 .orElseThrow(() -> new NotFoundResponse("Url not found"));
-        List<UrlCheck> urlCheck = UrlCheckRepository.find(urlId);
+        List<UrlCheck> urlCheck = UrlCheckRepository.findById(urlId);
         UrlsPage page = new UrlsPage(url, urlCheck);
-        page.setFlash(ctx.consumeSessionAttribute("flash"));
-        page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
-        ctx.render("show.jte", Map.of("page", page));
+        BasePage flash = new BasePage();
+        flash.setFlash(ctx.consumeSessionAttribute("flash"));
+        flash.setFlashType(ctx.consumeSessionAttribute("flash-type"));
+        ctx.render("show.jte", Map.of("page", page, "flash", flash));
     }
 
     public static void check(Context ctx) throws SQLException {
         Long id = ctx.pathParamAsClass("id", Long.class).get();
-        String url = UrlRepository.find(id).get().getName();
+        String url = UrlRepository.findById(id).get().getName();
         HttpResponse<String> response;
         String path = "/urls/" + id;
         try {

@@ -9,7 +9,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class UrlsPage extends BasePage {
+public class UrlsPage {
     private Url url;
     private List<UrlCheck> urlChecks;
 }
